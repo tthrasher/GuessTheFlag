@@ -67,7 +67,7 @@ struct ContentView: View {
             scoreMessage = "You got it! That's \(countries[correctAnswer]) all right. Your score is \(score)."
         } else {
             scoreTitle = "Wrong"
-            scoreMessage = "Wrong, you tapped \(countries[number]). Your score is still \(score)."
+            scoreMessage = "Wrong! You tapped \(countries[number]). Your score is still \(score)."
         }
         
         showingScore = true

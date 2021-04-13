@@ -13,6 +13,10 @@ struct ContentView: View {
     
     @State private var showingScore = false
     @State private var scoreTitle = ""
+    // Challenge 1 asked me to add a property to store the score, modify it when the user gets an answer correct, and display the score in the alert.
+    @State private var score = 0
+    // Challenge 3 asked me to add an alert message telling the user which flag they incorrectly chose.
+    @State private var scoreMessage = ""
     
     var body: some View {
         ZStack {
@@ -39,11 +43,18 @@ struct ContentView: View {
                             .shadow(color: .black, radius: 2)
                     }
                 }
+                
+                // Challenge 2 asked me to show the player's current score in a label directly below the flags.
+                VStack {
+                    Text("Score: \(score)")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                }
                 Spacer()
             }
         }
         .alert(isPresented: $showingScore) {
-            Alert(title: Text(scoreTitle), message: Text("Your score is ???"), dismissButton: .default(Text("Continue")) {
+            Alert(title: Text(scoreTitle), message: Text(scoreMessage), dismissButton: .default(Text("Continue")) {
                 self.askQuestion()
             })
         }
@@ -51,9 +62,12 @@ struct ContentView: View {
     
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
+            score += 1
             scoreTitle = "Correct"
+            scoreMessage = "You got it! That's \(countries[correctAnswer]) all right. Your score is \(score)."
         } else {
             scoreTitle = "Wrong"
+            scoreMessage = "Wrong, you tapped \(countries[number]). Your score is still \(score)."
         }
         
         showingScore = true

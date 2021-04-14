@@ -4,6 +4,7 @@
 //
 //  Created by Terry Thrasher on 2021-04-05.
 //
+//  Completed challenges from the project.
 
 import SwiftUI
 

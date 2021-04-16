@@ -8,6 +8,19 @@
 
 import SwiftUI
 
+// Challenge 3 from project 3 asks me to create a FlagImage() view that renders one flag image using the specific modifiers we've applied to the flags.
+struct FlagImage: View {
+    var flag: String
+    
+    var body: some View {
+        Image(flag)
+            .renderingMode(.original)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
+            .shadow(color: .black, radius: 2)
+    }
+}
+
 struct ContentView: View {
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
@@ -37,11 +50,7 @@ struct ContentView: View {
                     Button(action: {
                         self.flagTapped(number)
                     }) {
-                        Image(self.countries[number])
-                            .renderingMode(.original)
-                            .clipShape(Capsule())
-                            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
-                            .shadow(color: .black, radius: 2)
+                        FlagImage(flag: "\(self.countries[number])")
                     }
                 }
                 

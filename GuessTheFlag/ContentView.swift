@@ -32,6 +32,10 @@ struct ContentView: View {
     // Challenge 3 asked me to add an alert message telling the user which flag they incorrectly chose.
     @State private var scoreMessage = ""
     
+    @State private var spinCorrectFlag = false
+    @State private var spinDegrees = 0.0
+    @State private var opacityForIncorrectFlags = 0.25
+    
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [.blue, .black]), startPoint: .top, endPoint: .bottom)
@@ -46,12 +50,18 @@ struct ContentView: View {
                         .foregroundColor(.white)
                 }
                 
+                // Challenge 1 from project 6 asks me to make the correct answer flag spin 360° on the Y axis when tapped. I've made it so that the correct flag spins whenever any flag is tapped.
                 ForEach(0..<3) { number in
                     Button(action: {
-                        self.flagTapped(number)
+                        withAnimation {
+                            self.flagTapped(number)
+                            spinCorrectFlag = true
+                            spinDegrees += 360
+                        }
                     }) {
                         FlagImage(flag: "\(self.countries[number])")
                     }
+                    .rotation3DEffect(.degrees(number == correctAnswer ? spinDegrees : 0), axis: (x: 0.0, y: 1.0, z: 0.0))
                 }
                 
                 // Challenge 2 asked me to show the player's current score in a label directly below the flags.
@@ -86,6 +96,7 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        spinCorrectFlag = false
     }
 }
 

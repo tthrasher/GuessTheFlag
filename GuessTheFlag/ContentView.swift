@@ -31,10 +31,9 @@ struct ContentView: View {
     @State private var score = 0
     // Challenge 3 asked me to add an alert message telling the user which flag they incorrectly chose.
     @State private var scoreMessage = ""
-    
-    @State private var spinCorrectFlag = false
+
     @State private var spinDegrees = 0.0
-    @State private var opacityForIncorrectFlags = 0.25
+    @State private var opacityForIncorrectFlags = 1.0
     
     var body: some View {
         ZStack {
@@ -55,13 +54,14 @@ struct ContentView: View {
                     Button(action: {
                         withAnimation {
                             self.flagTapped(number)
-                            spinCorrectFlag = true
                             spinDegrees += 360
                         }
                     }) {
                         FlagImage(flag: "\(self.countries[number])")
                     }
                     .rotation3DEffect(.degrees(number == correctAnswer ? spinDegrees : 0), axis: (x: 0.0, y: 1.0, z: 0.0))
+                    // Challenge 2 from project 6 asks me to make the other two flags fade out to 25% opacity when the correct flag is tapped.
+                    .opacity(number == correctAnswer ? 1.0 : opacityForIncorrectFlags)
                 }
                 
                 // Challenge 2 asked me to show the player's current score in a label directly below the flags.
@@ -85,6 +85,7 @@ struct ContentView: View {
             score += 1
             scoreTitle = "Correct"
             scoreMessage = "You got it! That's \(countries[correctAnswer]) all right. Your score is \(score)."
+            opacityForIncorrectFlags = 0.25
         } else {
             scoreTitle = "Wrong"
             scoreMessage = "Wrong! You tapped \(countries[number]). Your score is still \(score)."
@@ -94,9 +95,9 @@ struct ContentView: View {
     }
     
     func askQuestion() {
+        opacityForIncorrectFlags = 1.0
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
-        spinCorrectFlag = false
     }
 }
 

@@ -10,6 +10,7 @@ import SwiftUI
 
 // Challenge 3 from project 3 asks me to create a FlagImage() view that renders one flag image using the specific modifiers we've applied to the flags.
 struct FlagImage: View {
+    
     var flag: String
     
     var body: some View {
@@ -34,11 +35,14 @@ struct ContentView: View {
 
     @State private var spinDegrees = 0.0
     @State private var opacityForIncorrectFlags = 1.0
+    @State private var backgroundRed = false
+    @State private var redOverlay = false
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.blue, .black]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: backgroundRed ? [.red, .black] : [.blue, .black]), startPoint: .top, endPoint: .bottom)
                 .edgesIgnoringSafeArea(.all)
+                .animation(.easeIn(duration: 2.5))
             VStack(spacing: 30) {
                 VStack {
                     Text("Tap the flag of")
@@ -49,18 +53,18 @@ struct ContentView: View {
                         .foregroundColor(.white)
                 }
                 
-                // Challenge 1 from project 6 asks me to make the correct answer flag spin 360° on the Y axis when tapped. I've made it so that the correct flag spins whenever any flag is tapped.
+                // Challenge 1 from project 6 asks me to make the correct answer flag spin 360° on the Y axis when tapped.
+                // Challenge 2 from project 6 asks me to make the other two flags fade out to 25% opacity when the correct flag is tapped.
+                // Challenge 3 from project 6 asks me to "be creative" with what happens when tapping the wrong flag. I've opted to animate the background red.
                 ForEach(0..<3) { number in
                     Button(action: {
                         withAnimation {
                             self.flagTapped(number)
-                            spinDegrees += 360
                         }
                     }) {
                         FlagImage(flag: "\(self.countries[number])")
                     }
                     .rotation3DEffect(.degrees(number == correctAnswer ? spinDegrees : 0), axis: (x: 0.0, y: 1.0, z: 0.0))
-                    // Challenge 2 from project 6 asks me to make the other two flags fade out to 25% opacity when the correct flag is tapped.
                     .opacity(number == correctAnswer ? 1.0 : opacityForIncorrectFlags)
                 }
                 
@@ -86,7 +90,9 @@ struct ContentView: View {
             scoreTitle = "Correct"
             scoreMessage = "You got it! That's \(countries[correctAnswer]) all right. Your score is \(score)."
             opacityForIncorrectFlags = 0.25
+            spinDegrees += 360
         } else {
+            backgroundRed = true
             scoreTitle = "Wrong"
             scoreMessage = "Wrong! You tapped \(countries[number]). Your score is still \(score)."
         }
@@ -96,6 +102,7 @@ struct ContentView: View {
     
     func askQuestion() {
         opacityForIncorrectFlags = 1.0
+        backgroundRed = false
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
     }
